@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Inventario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-searchbar placeholder="Buscar alimento"></ion-searchbar>
+
+  <ion-list>
+    @for (alimento of listaAlimentos; track alimento.id) {
+      <ion-item [button]="true" (click)="abrirEditarAlimento(alimento)">
+        <ion-label>
+          <h2>{{ alimento.nombre }}</h2>
+          <p>Cantidad: {{ alimento.cantidad }} unidades</p>
+          <p>Vence: {{ alimento.fechaVencimiento | date:'dd/MM/yyyy' }}</p>
+        </ion-label>
+
+        @if (alimento.pendienteRevisar) {
+          <ion-badge color="warning" slot="end">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            Revisar Fecha
+          </ion-badge>
+        }
+      </ion-item>
+    } @empty {
+      <ion-item>
+        <ion-label class="ion-text-center">
+          <p>No hay alimentos en la nevera.</p>
+        </ion-label>
+      </ion-item>
+    }
+  </ion-list>
+
+  <ion-modal [isOpen]="isModalOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ idAlimentoEditando ? 'Editar Alimento' : 'Nuevo Alimento' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      
+      <ion-content class="ion-padding">
+        <ion-item>
+          <ion-input label="Nombre" labelPlacement="floating" type="text" [(ngModel)]="nuevoNombre" placeholder="Ej. Manzanas"></ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-input label="Cantidad" labelPlacement="floating" type="number" [(ngModel)]="nuevaCantidad"></ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-input label="Fecha Vencimiento" labelPlacement="floating" type="date" [(ngModel)]="nuevaFecha"></ion-input>
+        </ion-item>
+
+        <ion-button expand="block" class="ion-margin-top" [color]="idAlimentoEditando ? 'warning' : 'primary'" (click)="guardarAlimento()">
+          {{ idAlimentoEditando ? 'Actualizar Alimento' : 'Guardar en Nevera' }}
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="abrirNuevoAlimento()">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

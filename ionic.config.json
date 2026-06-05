@@ -1,0 +1,7 @@
+{
+  "name": "NeverApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
