@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 
-// 1. Interfaz actualizada con la propiedad opcional para la alerta visual
 export interface Alimento {
   id: number;
   nombre: string;
   cantidad: number;
   fechaVencimiento: Date;
-  pendienteRevisar?: boolean; // <-- Identifica productos que necesitan revisión de fecha
+  categoria?: string;
+  pendienteRevisar?: boolean;
 }
 
-// Nueva interfaz adaptada para la lista de compras
 export interface ItemCompra {
   id: number;
   nombre: string;
@@ -21,24 +20,55 @@ export interface ItemCompra {
 })
 export class FoodService {
 
-  // Tus datos de prueba originales intactos
+  // 🟢 INVENTARIO CON CATEGORÍAS YA ASIGNADAS
   private inventario: Alimento[] = [
-    { id: 1, nombre: 'Leche Alquería', cantidad: 1, fechaVencimiento: new Date('2026-06-06') },
-    { id: 2, nombre: 'Huevos A', cantidad: 3, fechaVencimiento: new Date('2026-06-12') },
-    { id: 3, nombre: 'Pechuga de Pollo', cantidad: 2, fechaVencimiento: new Date('2026-06-05') },
-    { id: 4, nombre: 'Yogurt Griego', cantidad: 5, fechaVencimiento: new Date('2026-06-20') },
-    { id: 5, nombre: 'Tomates', cantidad: 1, fechaVencimiento: new Date('2026-06-07') }
+    {
+      id: 1,
+      nombre: 'Leche Alquería',
+      cantidad: 1,
+      fechaVencimiento: new Date('2026-06-06'),
+      categoria: 'Lácteos'
+    },
+    {
+      id: 2,
+      nombre: 'Huevos A',
+      cantidad: 3,
+      fechaVencimiento: new Date('2026-06-12'),
+      categoria: 'Carnes y Proteínas'
+    },
+    {
+      id: 3,
+      nombre: 'Pechuga de Pollo',
+      cantidad: 2,
+      fechaVencimiento: new Date('2026-06-05'),
+      categoria: 'Carnes y Proteínas'
+    },
+    {
+      id: 4,
+      nombre: 'Yogurt Griego',
+      cantidad: 5,
+      fechaVencimiento: new Date('2026-06-20'),
+      categoria: 'Lácteos'
+    },
+    {
+      id: 5,
+      nombre: 'Tomates',
+      cantidad: 1,
+      fechaVencimiento: new Date('2026-06-07'),
+      categoria: 'Verduras'
+    }
   ];
 
-  // Nueva lista en memoria para artículos agregados a mano
   private listaCompras: ItemCompra[] = [
     { id: 1, nombre: 'Arroz', comprado: false },
     { id: 2, nombre: 'Aceite', comprado: true }
   ];
 
-  constructor() { }
+  constructor() {}
 
-  // --- TUS FUNCIONES ORIGINALES (INTACTAS) ---
+  // =========================
+  // INVENTARIO
+  // =========================
   getInventario(): Alimento[] {
     return this.inventario;
   }
@@ -46,91 +76,111 @@ export class FoodService {
   agregarAlimento(alimento: Omit<Alimento, 'id'>) {
     const nuevoAlimento: Alimento = {
       ...alimento,
-      id: this.inventario.length > 0 ? Math.max(...this.inventario.map(a => a.id)) + 1 : 1
+      id: this.inventario.length > 0
+        ? Math.max(...this.inventario.map(a => a.id)) + 1
+        : 1
     };
+
     this.inventario.push(nuevoAlimento);
   }
 
+  // =========================
+  // ESTADÍSTICAS
+  // =========================
   getTotalAlmacenados(): number {
-    return this.inventario.reduce((total, producto) => total + producto.cantidad, 0);
+    return this.inventario.reduce((total, p) => total + p.cantidad, 0);
   }
 
   getProductosPocasUnidades(): Alimento[] {
-    return this.inventario.filter(producto => producto.cantidad <= 2);
+    return this.inventario.filter(p => p.cantidad <= 2);
   }
 
   getProductosProximosAVencer(): Alimento[] {
     const hoy = new Date();
-    const tresDiasDespues = new Date();
-    tresDiasDespues.setDate(hoy.getDate() + 3);
+    const tresDias = new Date();
+    tresDias.setDate(hoy.getDate() + 3);
 
-    return this.inventario.filter(producto => {
-      return producto.fechaVencimiento >= hoy && producto.fechaVencimiento <= tresDiasDespues;
-    });
+    return this.inventario.filter(p =>
+      p.fechaVencimiento >= hoy && p.fechaVencimiento <= tresDias
+    );
   }
 
-  // --- NUEVOS MÉTODOS ADAPTADOS PARA LA LISTA DE COMPRAS ---
+  // =========================
+  // 🔥 CONTEO POR CATEGORÍA (IMPORTANTE)
+  // =========================
+ getConteoPorCategoria() {
+  const conteo: { [key: string]: number } = {};
 
+  this.inventario.forEach(alimento => {
+
+    const cat = (alimento.categoria || 'Sin categoría').trim();
+
+    if (!conteo[cat]) {
+      conteo[cat] = 0;
+    }
+
+    conteo[cat]++;
+  });
+
+  return conteo;
+}
+
+  // =========================
+  // LISTA DE COMPRAS
+  // =========================
   getListaCompras(): ItemCompra[] {
-    // 1. Buscamos de forma inteligente si hay alimentos en el inventario con cantidad igual a 0
-    const agotadosDelInventario: ItemCompra[] = this.inventario
-      .filter(producto => producto.cantidad === 0)
-      .map((producto, index) => ({
-        id: 999 + index, 
-        nombre: `${producto.nombre} (Agotado en nevera)`,
+    const agotados = this.inventario
+      .filter(p => p.cantidad === 0)
+      .map((p, i) => ({
+        id: 999 + i,
+        nombre: `${p.nombre} (Agotado en nevera)`,
         comprado: false
       }));
 
-    // 2. Unimos los artículos manuales con los automáticamente agotados
-    return [...this.listaCompras, ...agotadosDelInventario];
+    return [...this.listaCompras, ...agotados];
   }
 
   agregarItemCompra(nombre: string) {
-    const nuevoItem: ItemCompra = {
-      id: this.listaCompras.length > 0 ? Math.max(...this.listaCompras.map(i => i.id)) + 1 : 1,
+    const nuevo: ItemCompra = {
+      id: this.listaCompras.length > 0
+        ? Math.max(...this.listaCompras.map(i => i.id)) + 1
+        : 1,
       nombre,
       comprado: false
     };
-    this.listaCompras.push(nuevoItem);
+
+    this.listaCompras.push(nuevo);
   }
 
   alternarEstadoCompra(id: number) {
     const item = this.listaCompras.find(i => i.id === id);
-    if (item) {
-      item.comprado = !item.comprado;
-    }
+    if (item) item.comprado = !item.comprado;
   }
 
   procesarCompra() {
-    // 1. Filtramos solo los artículos manuales que fueron chuleados
-    const comprados = this.listaCompras.filter(item => item.comprado);
+    const comprados = this.listaCompras.filter(i => i.comprado);
 
     comprados.forEach(item => {
-      // 2. Buscamos si el alimento ya existe en el inventario
-      const alimentoExistente = this.inventario.find(
+      const existente = this.inventario.find(
         a => a.nombre.toLowerCase() === item.nombre.toLowerCase()
       );
 
-      if (alimentoExistente) {
-        // Si ya existe, le sumamos la unidad y lo marcamos para revisar su nueva fecha
-        alimentoExistente.cantidad += 1;
-        alimentoExistente.pendienteRevisar = true; 
+      if (existente) {
+        existente.cantidad += 1;
+        existente.pendienteRevisar = true;
       } else {
-        // Si no existe, lo creamos con la fecha de hoy provisional y activamos la alerta de revisión
         this.agregarAlimento({
           nombre: item.nombre,
           cantidad: 1,
-          fechaVencimiento: new Date(), // Fecha actual temporal
-          pendienteRevisar: true       // <-- Marca activada
+          fechaVencimiento: new Date(),
+          pendienteRevisar: true
         });
       }
     });
 
-    // 3. Limpiamos de la lista de compras los artículos que ya procesamos
-    this.listaCompras = this.listaCompras.filter(item => !item.comprado);
+    this.listaCompras = this.listaCompras.filter(i => !i.comprado);
   }
 
-  // 3. NUEVO MÉTODO: Para remover la alerta cuando el usuario actualice la fecha desde el inventario
   quitarMarcaRevision(id: number) {
     const alimento = this.inventario.find(a => a.id === id);
     if (alimento) {

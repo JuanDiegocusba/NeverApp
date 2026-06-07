@@ -8,31 +8,98 @@
 
   <ion-searchbar placeholder="Buscar alimento"></ion-searchbar>
 
-  <ion-list>
-    @for (alimento of listaAlimentos; track alimento.id) {
-      <ion-item [button]="true" (click)="abrirEditarAlimento(alimento)">
-        <ion-label>
-          <h2>{{ alimento.nombre }}</h2>
-          <p>Cantidad: {{ alimento.cantidad }} unidades</p>
-          <p>Vence: {{ alimento.fechaVencimiento | date:'dd/MM/yyyy' }}</p>
-        </ion-label>
+  <!-- 🟢 DASHBOARD CATEGORÍAS -->
+  <ion-grid class="ion-padding">
 
-        @if (alimento.pendienteRevisar) {
-          <ion-badge color="warning" slot="end">
-            <ion-icon name="alert-circle-outline"></ion-icon>
-            Revisar Fecha
-          </ion-badge>
-        }
-      </ion-item>
+    <ion-row>
+
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-content>
+            <h3>Lácteos</h3>
+            <h1>{{ conteoCategorias['Lácteos'] || 0 }}</h1>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-content>
+            <h3>Frutas</h3>
+            <h1>{{ conteoCategorias['Frutas'] || 0 }}</h1>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-content>
+            <h3>Carnes y Proteínas</h3>
+            <h1>{{ conteoCategorias['Carnes y Proteínas'] || 0 }}</h1>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-content>
+            <h3>Verduras</h3>
+            <h1>{{ conteoCategorias['Verduras'] || 0 }}</h1>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-content>
+            <h3>Granos</h3>
+            <h1>{{ conteoCategorias['Granos'] || 0 }}</h1>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+    </ion-row>
+
+  </ion-grid>
+
+  <ion-col size="12" *ngIf="conteoCategorias['Sin categoría']">
+  <ion-card>
+    <ion-card-content>
+      <h3>Sin categoría</h3>
+      <h1>{{ conteoCategorias['Sin categoría'] }}</h1>
+    </ion-card-content>
+  </ion-card>
+</ion-col>
+
+  <!-- 🟢 LISTA DE INVENTARIO -->
+  <ion-list>
+
+    @for (alimento of listaAlimentos; track alimento.id) {
+    <ion-item [button]="true" (click)="abrirEditarAlimento(alimento)">
+      <ion-label>
+        <h2>{{ alimento.nombre }}</h2>
+        <p>Cantidad: {{ alimento.cantidad }} unidades</p>
+        <p>Vence: {{ alimento.fechaVencimiento | date:'dd/MM/yyyy' }}</p>
+      </ion-label>
+
+      @if (alimento.pendienteRevisar) {
+      <ion-badge color="warning" slot="end">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        Revisar Fecha
+      </ion-badge>
+      }
+    </ion-item>
     } @empty {
-      <ion-item>
-        <ion-label class="ion-text-center">
-          <p>No hay alimentos en la nevera.</p>
-        </ion-label>
-      </ion-item>
+    <ion-item>
+      <ion-label class="ion-text-center">
+        <p>No hay alimentos en la nevera.</p>
+      </ion-label>
+    </ion-item>
     }
+
   </ion-list>
 
+  <!-- 🟢 MODAL -->
   <ion-modal [isOpen]="isModalOpen">
     <ng-template>
       <ion-header>
@@ -43,29 +110,46 @@
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
-      
+
       <ion-content class="ion-padding">
+
         <ion-item>
-          <ion-input label="Nombre" labelPlacement="floating" type="text" [(ngModel)]="nuevoNombre" placeholder="Ej. Manzanas"></ion-input>
+          <ion-input label="Nombre" labelPlacement="floating" type="text" [(ngModel)]="nuevoNombre"></ion-input>
         </ion-item>
-        
+
         <ion-item>
           <ion-input label="Cantidad" labelPlacement="floating" type="number" [(ngModel)]="nuevaCantidad"></ion-input>
         </ion-item>
-        
+
         <ion-item>
           <ion-input label="Fecha Vencimiento" labelPlacement="floating" type="date" [(ngModel)]="nuevaFecha"></ion-input>
         </ion-item>
 
-        <ion-button expand="block" class="ion-margin-top" [color]="idAlimentoEditando ? 'warning' : 'primary'" (click)="guardarAlimento()">
+        <ion-item>
+          <ion-select label="Categoría" labelPlacement="floating" [(ngModel)]="nuevaCategoria">
+
+            <ion-select-option value="Lácteos">Lácteos</ion-select-option>
+            <ion-select-option value="Frutas">Frutas</ion-select-option>
+            <ion-select-option value="Verduras">Verduras</ion-select-option>
+            <ion-select-option value="Carnes y Proteínas">Carnes y Proteínas</ion-select-option>
+            <ion-select-option value="Granos">Granos</ion-select-option>
+
+          </ion-select>
+        </ion-item>
+
+        <ion-button expand="block" class="ion-margin-top"
+          [color]="idAlimentoEditando ? 'warning' : 'primary'"
+          (click)="guardarAlimento()">
           {{ idAlimentoEditando ? 'Actualizar Alimento' : 'Guardar en Nevera' }}
         </ion-button>
+
       </ion-content>
     </ng-template>
   </ion-modal>
 
 </ion-content>
 
+<!-- FAB -->
 <ion-fab vertical="bottom" horizontal="end" slot="fixed">
   <ion-fab-button (click)="abrirNuevoAlimento()">
     <ion-icon name="add"></ion-icon>

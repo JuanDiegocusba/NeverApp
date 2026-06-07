@@ -27,6 +27,10 @@ export const routes: Routes = [
         loadComponent: () => import('../pages/configuracion/configuracion.page').then(m => m.ConfiguracionPage),
       },
       {
+        path: 'categorias',
+        loadComponent: () => import('../pages/categorias/categorias.page').then(m => m.CategoriasPage),
+      },
+      {
         path: '',
         redirectTo: 'dashboard', // <-- Redirecciona al dashboard si entran a /tabs suelto
         pathMatch: 'full',
@@ -37,5 +41,7 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'tabs/dashboard', // <-- ESTA LÍNEA ES CLAVE: Si entran a la app vacía, los manda directo a las pestañas
     pathMatch: 'full',
+    
   },
+  
 ];
