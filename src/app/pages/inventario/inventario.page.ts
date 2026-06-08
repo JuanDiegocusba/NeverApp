@@ -2,17 +2,35 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar,
-  IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon,
-  IonModal, IonButtons, IonButton, IonInput, IonBadge,
-  IonSelect, IonSelectOption,
-  IonGrid, IonRow, IonCol,
-  IonCard, IonCardContent
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonSearchbar,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonFab,
+  IonFabButton,
+  IonIcon,
+  IonModal,
+  IonButtons,
+  IonButton,
+  IonInput,
+  IonBadge,
+  IonSelect,
+  IonSelectOption,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonCard,
+  IonCardContent,
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
 import { add, alertCircleOutline } from 'ionicons/icons';
 import { FoodService, Alimento } from '../../services/food';
+import { NotificacionesService } from '../../services/notificaciones.service';
 
 @Component({
   selector: 'app-inventario',
@@ -44,12 +62,12 @@ import { FoodService, Alimento } from '../../services/food';
     IonRow,
     IonCol,
     IonCard,
-    IonCardContent
-  ]
+    IonCardContent,
+  ],
 })
 export class InventarioPage implements OnInit {
-
   private foodService = inject(FoodService);
+  private notificacionesService = inject(NotificacionesService);
 
   public listaAlimentos: Alimento[] = [];
 
@@ -128,32 +146,35 @@ export class InventarioPage implements OnInit {
     }
 
     if (this.idAlimentoEditando !== null) {
-
-      const alimento = this.foodService.getInventario()
-        .find(a => a.id === this.idAlimentoEditando);
-
+      const alimento = this.foodService
+        .getInventario()
+        .find((a) => a.id === this.idAlimentoEditando);
       if (alimento) {
         alimento.nombre = this.nuevoNombre;
         alimento.cantidad = this.nuevaCantidad;
         alimento.categoria = this.nuevaCategoria;
         alimento.fechaVencimiento = new Date(this.nuevaFecha);
-
         this.foodService.quitarMarcaRevision(alimento.id);
+
+        // 2. Reprogramar alerta al actualizar
+        this.notificacionesService.programarAlertaVencimiento(alimento);
       }
-
     } else {
-
-      this.foodService.agregarAlimento({
+      // Cuando es un producto NUEVO
+      const nuevoAlimento = {
         nombre: this.nuevoNombre,
         cantidad: this.nuevaCantidad,
         categoria: this.nuevaCategoria,
-        fechaVencimiento: new Date(this.nuevaFecha)
-      });
+        fechaVencimiento: new Date(this.nuevaFecha),
+      };
 
+      this.foodService.agregarAlimento(nuevoAlimento);
+
+      // 3. ¡PROGRAMAR LA NOTIFICACIÓN PUSH!
+      this.notificacionesService.programarAlertaVencimiento(nuevoAlimento);
     }
 
     this.cerrarModal();
-
     this.obtenerProductos();
     this.obtenerCategorias();
   }

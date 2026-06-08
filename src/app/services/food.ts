@@ -16,10 +16,9 @@ export interface ItemCompra {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FoodService {
-
   // 🟢 INVENTARIO CON CATEGORÍAS YA ASIGNADAS
   private inventario: Alimento[] = [
     {
@@ -27,41 +26,41 @@ export class FoodService {
       nombre: 'Leche Alquería',
       cantidad: 1,
       fechaVencimiento: new Date('2026-06-06'),
-      categoria: 'Lácteos'
+      categoria: 'Lácteos',
     },
     {
       id: 2,
       nombre: 'Huevos A',
       cantidad: 3,
       fechaVencimiento: new Date('2026-06-12'),
-      categoria: 'Carnes y Proteínas'
+      categoria: 'Carnes y Proteínas',
     },
     {
       id: 3,
       nombre: 'Pechuga de Pollo',
       cantidad: 2,
       fechaVencimiento: new Date('2026-06-05'),
-      categoria: 'Carnes y Proteínas'
+      categoria: 'Carnes y Proteínas',
     },
     {
       id: 4,
       nombre: 'Yogurt Griego',
       cantidad: 5,
       fechaVencimiento: new Date('2026-06-20'),
-      categoria: 'Lácteos'
+      categoria: 'Lácteos',
     },
     {
       id: 5,
       nombre: 'Tomates',
       cantidad: 1,
       fechaVencimiento: new Date('2026-06-07'),
-      categoria: 'Verduras'
-    }
+      categoria: 'Verduras',
+    },
   ];
 
   private listaCompras: ItemCompra[] = [
     { id: 1, nombre: 'Arroz', comprado: false },
-    { id: 2, nombre: 'Aceite', comprado: true }
+    { id: 2, nombre: 'Aceite', comprado: true },
   ];
 
   constructor() {}
@@ -76,9 +75,10 @@ export class FoodService {
   agregarAlimento(alimento: Omit<Alimento, 'id'>) {
     const nuevoAlimento: Alimento = {
       ...alimento,
-      id: this.inventario.length > 0
-        ? Math.max(...this.inventario.map(a => a.id)) + 1
-        : 1
+      id:
+        this.inventario.length > 0
+          ? Math.max(...this.inventario.map((a) => a.id)) + 1
+          : 1,
     };
 
     this.inventario.push(nuevoAlimento);
@@ -92,7 +92,7 @@ export class FoodService {
   }
 
   getProductosPocasUnidades(): Alimento[] {
-    return this.inventario.filter(p => p.cantidad <= 2);
+    return this.inventario.filter((p) => p.cantidad <= 2);
   }
 
   getProductosProximosAVencer(): Alimento[] {
@@ -100,41 +100,40 @@ export class FoodService {
     const tresDias = new Date();
     tresDias.setDate(hoy.getDate() + 3);
 
-    return this.inventario.filter(p =>
-      p.fechaVencimiento >= hoy && p.fechaVencimiento <= tresDias
+    return this.inventario.filter(
+      (p) => p.fechaVencimiento >= hoy && p.fechaVencimiento <= tresDias,
     );
   }
 
   // =========================
   // 🔥 CONTEO POR CATEGORÍA (IMPORTANTE)
   // =========================
- getConteoPorCategoria() {
-  const conteo: { [key: string]: number } = {};
+  getConteoPorCategoria() {
+    const conteo: { [key: string]: number } = {};
 
-  this.inventario.forEach(alimento => {
+    this.inventario.forEach((alimento) => {
+      const cat = (alimento.categoria || 'Sin categoría').trim();
 
-    const cat = (alimento.categoria || 'Sin categoría').trim();
+      if (!conteo[cat]) {
+        conteo[cat] = 0;
+      }
 
-    if (!conteo[cat]) {
-      conteo[cat] = 0;
-    }
+      conteo[cat]++;
+    });
 
-    conteo[cat]++;
-  });
-
-  return conteo;
-}
+    return conteo;
+  }
 
   // =========================
   // LISTA DE COMPRAS
   // =========================
   getListaCompras(): ItemCompra[] {
     const agotados = this.inventario
-      .filter(p => p.cantidad === 0)
+      .filter((p) => p.cantidad === 0)
       .map((p, i) => ({
         id: 999 + i,
         nombre: `${p.nombre} (Agotado en nevera)`,
-        comprado: false
+        comprado: false,
       }));
 
     return [...this.listaCompras, ...agotados];
@@ -142,27 +141,28 @@ export class FoodService {
 
   agregarItemCompra(nombre: string) {
     const nuevo: ItemCompra = {
-      id: this.listaCompras.length > 0
-        ? Math.max(...this.listaCompras.map(i => i.id)) + 1
-        : 1,
+      id:
+        this.listaCompras.length > 0
+          ? Math.max(...this.listaCompras.map((i) => i.id)) + 1
+          : 1,
       nombre,
-      comprado: false
+      comprado: false,
     };
 
     this.listaCompras.push(nuevo);
   }
 
   alternarEstadoCompra(id: number) {
-    const item = this.listaCompras.find(i => i.id === id);
+    const item = this.listaCompras.find((i) => i.id === id);
     if (item) item.comprado = !item.comprado;
   }
 
   procesarCompra() {
-    const comprados = this.listaCompras.filter(i => i.comprado);
+    const comprados = this.listaCompras.filter((i) => i.comprado);
 
-    comprados.forEach(item => {
+    comprados.forEach((item) => {
       const existente = this.inventario.find(
-        a => a.nombre.toLowerCase() === item.nombre.toLowerCase()
+        (a) => a.nombre.toLowerCase() === item.nombre.toLowerCase(),
       );
 
       if (existente) {
@@ -173,18 +173,33 @@ export class FoodService {
           nombre: item.nombre,
           cantidad: 1,
           fechaVencimiento: new Date(),
-          pendienteRevisar: true
+          pendienteRevisar: true,
         });
       }
     });
 
-    this.listaCompras = this.listaCompras.filter(i => !i.comprado);
+    this.listaCompras = this.listaCompras.filter((i) => !i.comprado);
   }
 
   quitarMarcaRevision(id: number) {
-    const alimento = this.inventario.find(a => a.id === id);
+    const alimento = this.inventario.find((a) => a.id === id);
     if (alimento) {
       alimento.pendienteRevisar = false;
     }
+  }
+
+  // =========================
+  // NUEVO: FILTRO DE VENCIDOS
+  // =========================
+  getProductosVencidos(): Alimento[] {
+    const hoy = new Date();
+    // Ajustamos la hora a medianoche para comparar solo fechas
+    hoy.setHours(0, 0, 0, 0);
+
+    return this.inventario.filter((p) => {
+      const vencimiento = new Date(p.fechaVencimiento);
+      vencimiento.setHours(0, 0, 0, 0);
+      return vencimiento < hoy;
+    });
   }
 }

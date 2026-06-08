@@ -1,13 +1,39 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>alertas</ion-title>
+  <ion-toolbar color="danger">
+    <ion-title>Alertas de Vencimiento</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">alertas</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-list lines="inset">
+    @for (alimento of productosAlertas; track alimento.id) {
+    <ion-item>
+      <ion-icon
+        [name]="(alimento.fechaVencimiento < today) ? 'alert-circle-outline' : 'warning-outline'"
+        [color]="(alimento.fechaVencimiento < today) ? 'danger' : 'warning'"
+        slot="start"
+      >
+      </ion-icon>
+
+      <ion-label>
+        <h2>{{ alimento.nombre }}</h2>
+        <p
+          class="ion-text-wrap"
+          [class.ion-text-danger]="alimento.fechaVencimiento < today"
+          [class.ion-text-warning]="alimento.fechaVencimiento >= today"
+        >
+          {{ (alimento.fechaVencimiento < today) ? '¡VENCIDO EL:' : 'Vence:' }}
+          {{ alimento.fechaVencimiento | date:'dd/MM/yyyy' }}
+        </p>
+      </ion-label>
+
+      <ion-badge
+        [color]="(alimento.fechaVencimiento < today) ? 'danger' : 'warning'"
+        slot="end"
+      >
+        {{ alimento.cantidad }} unid.
+      </ion-badge>
+    </ion-item>
+    } @empty { }
+  </ion-list>
 </ion-content>
