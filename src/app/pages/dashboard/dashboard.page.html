@@ -6,21 +6,28 @@
 
 <ion-content class="ion-padding">
 
-  <ion-card color="danger">
+  <ion-card class="tarjeta-vencidos">
+    <ion-card-header>
+      <ion-card-title>Productos vencidos</ion-card-title>
+      <ion-card-subtitle>{{ productosVencidos }} productos</ion-card-subtitle>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card class="tarjeta-proximos">
     <ion-card-header>
       <ion-card-title>Próximos a vencer</ion-card-title>
       <ion-card-subtitle>{{ proximosVencer }} productos</ion-card-subtitle>
     </ion-card-header>
   </ion-card>
 
-  <ion-card color="warning">
+  <ion-card class="tarjeta-pocas-unidades">
     <ion-card-header>
       <ion-card-title>Pocas unidades</ion-card-title>
       <ion-card-subtitle>{{ pocasUnidades }} productos</ion-card-subtitle>
     </ion-card-header>
   </ion-card>
 
-  <ion-card color="primary">
+  <ion-card class="tarjeta-total">
     <ion-card-header>
       <ion-card-title>Total almacenados</ion-card-title>
       <ion-card-subtitle>{{ totalProductos }} productos</ion-card-subtitle>

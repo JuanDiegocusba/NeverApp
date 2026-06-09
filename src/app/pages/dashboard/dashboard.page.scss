@@ -1,0 +1,50 @@
+ion-card {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  ion-card-title {
+    font-weight: 700 !important;
+    font-size: 1.4rem !important;
+  }
+
+  ion-card-subtitle {
+    font-size: 1.05rem !important;
+    margin-top: 6px !important;
+  }
+}
+.tarjeta-vencidos {
+  --background: #d32f2f !important;
+  background: #d32f2f !important;
+
+  ion-card-title, ion-card-subtitle {
+    color: #ffffff !important;
+  }
+}
+
+.tarjeta-proximos {
+  --background: #fbc02d !important;
+  background: #fbc02d !important;
+
+  ion-card-title, ion-card-subtitle {
+    color: #1a1a1a !important;
+  }
+}
+
+.tarjeta-pocas-unidades {
+  --background: #ffb74d !important;
+  background: #ffb74d !important;
+
+  ion-card-title, ion-card-subtitle {
+    color: #1a1a1a !important;
+  }
+}
+
+.tarjeta-total {
+  --background: #3880ff !important;
+  background: #3880ff !important;
+
+  ion-card-title, ion-card-subtitle {
+    color: #ffffff !important;
+  }
+}

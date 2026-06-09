@@ -70,17 +70,17 @@ export class InventarioPage implements OnInit {
   private notificacionesService = inject(NotificacionesService);
 
   public listaAlimentos: Alimento[] = [];
-
   public isModalOpen = false;
 
+  // Variables del formulario Mapped
   public nuevoNombre: string = '';
   public nuevaCantidad: number = 1;
   public nuevaFecha: string = '';
   public nuevaCategoria: string = '';
 
   public idAlimentoEditando: number | null = null;
-
   public conteoCategorias: any = {};
+  public textoBuscar: string = '';
 
   constructor() {
     addIcons({ add, alertCircleOutline });
@@ -100,7 +100,24 @@ export class InventarioPage implements OnInit {
   // PRODUCTOS
   // =========================
   obtenerProductos() {
-    this.listaAlimentos = this.foodService.getInventario();
+    const inventarioCompleto = this.foodService.getInventario();
+
+    if (!this.textoBuscar.trim()) {
+      this.listaAlimentos = inventarioCompleto;
+    } else {
+      const termino = this.textoBuscar.toLowerCase().trim();
+      this.listaAlimentos = inventarioCompleto.filter(alimento => 
+        alimento.nombre.toLowerCase().includes(termino)
+      );
+    }
+  }
+
+  /**
+   * Captura el evento de escritura del buscador de Ionic
+   */
+  filtrarAlimentos(event: any) {
+    this.textoBuscar = event.detail.value || '';
+    this.obtenerProductos();
   }
 
   // =========================
@@ -111,7 +128,7 @@ export class InventarioPage implements OnInit {
   }
 
   // =========================
-  // MODAL
+  // MODAL CONTROL
   // =========================
   setOpen(isOpen: boolean) {
     this.isModalOpen = isOpen;
@@ -126,19 +143,27 @@ export class InventarioPage implements OnInit {
     this.setOpen(true);
   }
 
+  /**
+   * Carga los datos del alimento seleccionado en el formulario para su edición
+   */ // 🌟 Corrección aquí: Se cerró el comentario de manera correcta con '*/'
   abrirEditarAlimento(alimento: Alimento) {
     this.idAlimentoEditando = alimento.id;
     this.nuevoNombre = alimento.nombre;
     this.nuevaCantidad = alimento.cantidad;
-    this.nuevaCategoria = alimento.categoria || '';
-
-    this.nuevaFecha = alimento.fechaVencimiento
-      ? new Date(alimento.fechaVencimiento).toISOString().split('T')[0]
-      : '';
-
+    this.nuevaCategoria = alimento.categoria || 'Sin categoría';
+    
+    if (alimento.fechaVencimiento) {
+      this.nuevaFecha = new Date(alimento.fechaVencimiento).toISOString().split('T')[0];
+    } else {
+      this.nuevaFecha = '';
+    }
+    
     this.setOpen(true);
   }
 
+  /**
+   * Proceso persistencia del alimento discriminando entre creación y actualización
+   */
   guardarAlimento() {
     if (!this.nuevoNombre.trim() || !this.nuevaFecha) {
       alert('Por favor, llena todos los campos');
@@ -146,32 +171,39 @@ export class InventarioPage implements OnInit {
     }
 
     if (this.idAlimentoEditando !== null) {
+      // MODO EDICIÓN
       const alimento = this.foodService
         .getInventario()
         .find((a) => a.id === this.idAlimentoEditando);
+        
       if (alimento) {
         alimento.nombre = this.nuevoNombre;
         alimento.cantidad = this.nuevaCantidad;
         alimento.categoria = this.nuevaCategoria;
         alimento.fechaVencimiento = new Date(this.nuevaFecha);
+        
         this.foodService.quitarMarcaRevision(alimento.id);
-
-        // 2. Reprogramar alerta al actualizar
         this.notificacionesService.programarAlertaVencimiento(alimento);
       }
     } else {
-      // Cuando es un producto NUEVO
+      // MODO CREACIÓN (PRODUCTO NUEVO)
       const nuevoAlimento = {
         nombre: this.nuevoNombre,
         cantidad: this.nuevaCantidad,
-        categoria: this.nuevaCategoria,
+        categoria: this.nuevaCategoria || 'Sin categoría',
         fechaVencimiento: new Date(this.nuevaFecha),
       };
 
       this.foodService.agregarAlimento(nuevoAlimento);
 
-      // 3. ¡PROGRAMAR LA NOTIFICACIÓN PUSH!
-      this.notificacionesService.programarAlertaVencimiento(nuevoAlimento);
+      const agregado = this.foodService.getInventario().find(
+        a => a.nombre === nuevoAlimento.nombre && 
+        new Date(a.fechaVencimiento).getTime() === nuevoAlimento.fechaVencimiento.getTime()
+      );
+      
+      if (agregado) {
+        this.notificacionesService.programarAlertaVencimiento(agregado);
+      }
     }
 
     this.cerrarModal();
