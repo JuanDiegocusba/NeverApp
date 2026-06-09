@@ -19,7 +19,6 @@ export interface ItemCompra {
   providedIn: 'root',
 })
 export class FoodService {
-  // 🟢 INVENTARIO CON CATEGORÍAS YA ASIGNADAS
   private inventario: Alimento[] = [
     {
       id: 1,
@@ -65,9 +64,6 @@ export class FoodService {
 
   constructor() {}
 
-  // =========================
-  // INVENTARIO
-  // =========================
   getInventario(): Alimento[] {
     return this.inventario;
   }
@@ -84,9 +80,6 @@ export class FoodService {
     this.inventario.push(nuevoAlimento);
   }
 
-  // =========================
-  // ESTADÍSTICAS CORREGIDAS
-  // =========================
   getTotalAlmacenados(): number {
     return this.inventario.reduce((total, p) => total + p.cantidad, 0);
   }
@@ -95,12 +88,9 @@ export class FoodService {
     return this.inventario.filter((p) => p.cantidad <= 2);
   }
 
-  /**
-   * Captura alimentos críticos: ya vencidos O que vencen en los próximos 3 días.
-   */
   getProductosProximosAVencer(): Alimento[] {
     const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0); // Limpieza de tiempo para comparación exacta
+    hoy.setHours(0, 0, 0, 0);
 
     const limiteTresDias = new Date(hoy);
     limiteTresDias.setDate(hoy.getDate() + 3);
@@ -110,15 +100,10 @@ export class FoodService {
 
       const vencimiento = new Date(p.fechaVencimiento);
       vencimiento.setHours(0, 0, 0, 0);
-
-      // Entra en la alerta si: Ya se venció (<= hoy) O está en el rango de los próximos 3 días
       return vencimiento.getTime() <= limiteTresDias.getTime();
     });
   }
 
-  /**
-   * Filtra estrictamente los productos cuya fecha de vencimiento quedó en el pasado.
-   */
   getProductosVencidos(): Alimento[] {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
@@ -133,9 +118,6 @@ export class FoodService {
     });
   }
 
-  // =========================
-  // 🔥 CONTEO POR CATEGORÍA
-  // =========================
   getConteoPorCategoria() {
     const conteo: { [key: string]: number } = {};
 
@@ -152,9 +134,6 @@ export class FoodService {
     return conteo;
   }
 
-  // =========================
-  // LISTA DE COMPRAS
-  // =========================
   getListaCompras(): ItemCompra[] {
     const agotados = this.inventario
       .filter((p) => p.cantidad === 0)
@@ -201,7 +180,7 @@ export class FoodService {
           nombre: item.nombre,
           cantidad: 1,
           fechaVencimiento: new Date(),
-          categoria: 'Sin categoría', // 🌟 Agregamos esto para que el modal no falle por falta de datos
+          categoria: 'Sin categoría', 
           pendienteRevisar: true,
         });
       }

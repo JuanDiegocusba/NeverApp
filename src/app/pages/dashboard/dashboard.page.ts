@@ -33,7 +33,6 @@ export class DashboardPage implements OnInit {
   
   private foodService = inject(FoodService);
 
-  // Variables mapped con los nombres que usaremos en la interfaz
   public totalProductos: number = 0;
   public pocasUnidades: number = 0;
   public proximosVencer: number = 0;
@@ -48,16 +47,27 @@ export class DashboardPage implements OnInit {
   ionViewWillEnter() {
     this.cargarResumen();
   }
+
   cargarResumen() {
+    // Obtenemos el arreglo base con todos los productos registrados (filas)
     const inventario = this.foodService.getInventario();
+    
+    // Configuración de fechas para la evaluación de vencimientos
     const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0); // Normalizar fecha de control actual
+    hoy.setHours(0, 0, 0, 0);
 
-    // 1. Obtener los totales procesados por tus métodos del servicio
-    this.totalProductos = this.foodService.getTotalAlmacenados();
-    this.pocasUnidades = this.foodService.getProductosPocasUnidades().length;
-    this.proximosVencer = this.foodService.getProductosProximosAVencer().length;
+    const limiteProximos = new Date();
+    limiteProximos.setDate(hoy.getDate() + 3);
+    limiteProximos.setHours(23, 59, 59, 999);
 
+    this.totalProductos = inventario.length;
+
+    this.pocasUnidades = inventario.filter(alimento => alimento.cantidad <= 2).length;
+
+    this.proximosVencer = inventario.filter(alimento => {
+      const fechaVence = new Date(alimento.fechaVencimiento);
+      return fechaVence >= hoy && fechaVence <= limiteProximos;
+    }).length;
     this.productosVencidos = inventario.filter(alimento => {
       const fechaVence = new Date(alimento.fechaVencimiento);
       return fechaVence < hoy;

@@ -96,9 +96,6 @@ export class InventarioPage implements OnInit {
     this.obtenerCategorias();
   }
 
-  // =========================
-  // PRODUCTOS
-  // =========================
   obtenerProductos() {
     const inventarioCompleto = this.foodService.getInventario();
 
@@ -112,24 +109,15 @@ export class InventarioPage implements OnInit {
     }
   }
 
-  /**
-   * Captura el evento de escritura del buscador de Ionic
-   */
   filtrarAlimentos(event: any) {
     this.textoBuscar = event.detail.value || '';
     this.obtenerProductos();
   }
 
-  // =========================
-  // CATEGORÍAS
-  // =========================
   obtenerCategorias() {
     this.conteoCategorias = this.foodService.getConteoPorCategoria();
   }
 
-  // =========================
-  // MODAL CONTROL
-  // =========================
   setOpen(isOpen: boolean) {
     this.isModalOpen = isOpen;
   }
@@ -143,9 +131,6 @@ export class InventarioPage implements OnInit {
     this.setOpen(true);
   }
 
-  /**
-   * Carga los datos del alimento seleccionado en el formulario para su edición
-   */ // 🌟 Corrección aquí: Se cerró el comentario de manera correcta con '*/'
   abrirEditarAlimento(alimento: Alimento) {
     this.idAlimentoEditando = alimento.id;
     this.nuevoNombre = alimento.nombre;
@@ -161,9 +146,6 @@ export class InventarioPage implements OnInit {
     this.setOpen(true);
   }
 
-  /**
-   * Proceso persistencia del alimento discriminando entre creación y actualización
-   */
   guardarAlimento() {
     if (!this.nuevoNombre.trim() || !this.nuevaFecha) {
       alert('Por favor, llena todos los campos');
@@ -171,7 +153,6 @@ export class InventarioPage implements OnInit {
     }
 
     if (this.idAlimentoEditando !== null) {
-      // MODO EDICIÓN
       const alimento = this.foodService
         .getInventario()
         .find((a) => a.id === this.idAlimentoEditando);

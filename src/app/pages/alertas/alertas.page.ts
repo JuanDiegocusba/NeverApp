@@ -40,7 +40,6 @@ import { FoodService, Alimento } from '../../services/food';
   ],
 })
 export class AlertasPage implements OnInit {
-  // Inyectamos tu servicio de base de datos local
   private foodService = inject(FoodService);
 
   public productosAlertas: Alimento[] = [];
@@ -54,16 +53,25 @@ export class AlertasPage implements OnInit {
     this.cargarAlertas();
   }
 
-  // ionViewWillEnter asegura que se actualice la lista cada vez que el usuario entre a la pestaña
   ionViewWillEnter() {
     this.cargarAlertas();
   }
 
   cargarAlertas() {
     const proximosAVencer = this.foodService.getProductosProximosAVencer();
-    const vencidos = this.foodService.getProductosVencidos(); // Este es el que creamos antes
+    const vencidos = this.foodService.getProductosVencidos();
+    const listaConDuplicados = [...proximosAVencer, ...vencidos];
 
-    // Combinamos ambas listas para mostrar todo en una sola pantalla
-    this.productosAlertas = [...proximosAVencer, ...vencidos];
+    const mapaUnicos = new Map();
+    
+    listaConDuplicados.forEach(alimento => {
+      const llaveUnica = alimento.id || `${alimento.nombre.toLowerCase()}-${alimento.fechaVencimiento}`;
+      
+      if (!mapaUnicos.has(llaveUnica)) {
+        mapaUnicos.set(llaveUnica, alimento);
+      }
+    });
+
+    this.productosAlertas = Array.from(mapaUnicos.values());
   }
 }
