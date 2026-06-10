@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Registro
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <h1>Crear Cuenta</h1>
+
+  <p>Registra tus datos para comenzar a utilizar NeverApp.</p>
+
+  <ion-item>
+    <ion-label position="stacked">Nombre completo</ion-label>
+    <ion-input [(ngModel)]="nombre"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Correo electrónico</ion-label>
+    <ion-input type="email" [(ngModel)]="correo"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Contraseña</ion-label>
+    <ion-input type="password" [(ngModel)]="password"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Confirmar contraseña</ion-label>
+    <ion-input type="password" [(ngModel)]="confirmarPassword"></ion-input>
+  </ion-item>
+
+  <br>
+
+  <ion-button expand="block" (click)="registrar()">
+    Registrarse
+  </ion-button>
+
+</ion-content>

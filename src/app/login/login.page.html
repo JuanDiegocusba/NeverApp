@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      NeverApp
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <h1>Bienvenido</h1>
+
+  <p>Inicia sesión para gestionar tus alimentos.</p>
+
+  <ion-item>
+    <ion-label position="stacked">Correo electrónico</ion-label>
+    <ion-input type="email" [(ngModel)]="correo"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Contraseña</ion-label>
+    <ion-input type="password" [(ngModel)]="password"></ion-input>
+  </ion-item>
+
+  <br>
+
+  <ion-button expand="block" (click)="iniciarSesion()">
+    Iniciar Sesión
+  </ion-button>
+
+  <ion-button expand="block" fill="outline" (click)="irARegistro()">
+    Registrarse
+  </ion-button>
+
+</ion-content>

@@ -19,7 +19,6 @@ export interface ItemCompra {
   providedIn: 'root',
 })
 export class FoodService {
-  // 🟢 INVENTARIO CON CATEGORÍAS YA ASIGNADAS
   private inventario: Alimento[] = [
     {
       id: 1,
@@ -65,9 +64,6 @@ export class FoodService {
 
   constructor() {}
 
-  // =========================
-  // INVENTARIO
-  // =========================
   getInventario(): Alimento[] {
     return this.inventario;
   }
@@ -84,9 +80,6 @@ export class FoodService {
     this.inventario.push(nuevoAlimento);
   }
 
-  // =========================
-  // ESTADÍSTICAS
-  // =========================
   getTotalAlmacenados(): number {
     return this.inventario.reduce((total, p) => total + p.cantidad, 0);
   }
@@ -97,17 +90,34 @@ export class FoodService {
 
   getProductosProximosAVencer(): Alimento[] {
     const hoy = new Date();
-    const tresDias = new Date();
-    tresDias.setDate(hoy.getDate() + 3);
+    hoy.setHours(0, 0, 0, 0);
 
-    return this.inventario.filter(
-      (p) => p.fechaVencimiento >= hoy && p.fechaVencimiento <= tresDias,
-    );
+    const limiteTresDias = new Date(hoy);
+    limiteTresDias.setDate(hoy.getDate() + 3);
+
+    return this.inventario.filter((p) => {
+      if (!p.fechaVencimiento) return false;
+
+      const vencimiento = new Date(p.fechaVencimiento);
+      vencimiento.setHours(0, 0, 0, 0);
+      return vencimiento.getTime() <= limiteTresDias.getTime();
+    });
   }
 
-  // =========================
-  // 🔥 CONTEO POR CATEGORÍA (IMPORTANTE)
-  // =========================
+  getProductosVencidos(): Alimento[] {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    return this.inventario.filter((p) => {
+      if (!p.fechaVencimiento) return false;
+      
+      const vencimiento = new Date(p.fechaVencimiento);
+      vencimiento.setHours(0, 0, 0, 0);
+      
+      return vencimiento.getTime() < hoy.getTime();
+    });
+  }
+
   getConteoPorCategoria() {
     const conteo: { [key: string]: number } = {};
 
@@ -124,9 +134,6 @@ export class FoodService {
     return conteo;
   }
 
-  // =========================
-  // LISTA DE COMPRAS
-  // =========================
   getListaCompras(): ItemCompra[] {
     const agotados = this.inventario
       .filter((p) => p.cantidad === 0)
@@ -157,7 +164,7 @@ export class FoodService {
     if (item) item.comprado = !item.comprado;
   }
 
-  procesarCompra() {
+ procesarCompra() {
     const comprados = this.listaCompras.filter((i) => i.comprado);
 
     comprados.forEach((item) => {
@@ -173,6 +180,7 @@ export class FoodService {
           nombre: item.nombre,
           cantidad: 1,
           fechaVencimiento: new Date(),
+          categoria: 'Sin categoría', 
           pendienteRevisar: true,
         });
       }
@@ -186,20 +194,5 @@ export class FoodService {
     if (alimento) {
       alimento.pendienteRevisar = false;
     }
-  }
-
-  // =========================
-  // NUEVO: FILTRO DE VENCIDOS
-  // =========================
-  getProductosVencidos(): Alimento[] {
-    const hoy = new Date();
-    // Ajustamos la hora a medianoche para comparar solo fechas
-    hoy.setHours(0, 0, 0, 0);
-
-    return this.inventario.filter((p) => {
-      const vencimiento = new Date(p.fechaVencimiento);
-      vencimiento.setHours(0, 0, 0, 0);
-      return vencimiento < hoy;
-    });
   }
 }
