@@ -32,14 +32,13 @@ export const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'dashboard', // <-- Redirecciona al dashboard si entran a /tabs suelto
-        pathMatch: 'full',
+        redirectTo: 'dashboard', 
       },
     ],
   },
   {
     path: '',
-    redirectTo: 'tabs/dashboard', // <-- ESTA LÍNEA ES CLAVE: Si entran a la app vacía, los manda directo a las pestañas
+    redirectTo: 'tabs/dashboard',
     pathMatch: 'full',
     
   },

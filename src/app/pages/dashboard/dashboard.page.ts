@@ -9,6 +9,9 @@ import {
   IonCardHeader, 
   IonCardSubtitle, 
   IonCardTitle,
+  IonButtons,     
+  IonMenuButton,   
+  IonIcon         // <-- Agregado para los iconos de las tarjetas estilizadas
 } from '@ionic/angular/standalone';
 import { FoodService } from '../../services/food';
 
@@ -27,6 +30,9 @@ import { FoodService } from '../../services/food';
     IonCardHeader, 
     IonCardSubtitle, 
     IonCardTitle,
+    IonButtons,     
+    IonMenuButton,   
+    IonIcon       // <-- Agregado en los imports del componente
   ]
 })
 export class DashboardPage implements OnInit {
@@ -68,6 +74,7 @@ export class DashboardPage implements OnInit {
       const fechaVence = new Date(alimento.fechaVencimiento);
       return fechaVence >= hoy && fechaVence <= limiteProximos;
     }).length;
+
     this.productosVencidos = inventario.filter(alimento => {
       const fechaVence = new Date(alimento.fechaVencimiento);
       return fechaVence < hoy;

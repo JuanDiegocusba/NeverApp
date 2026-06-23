@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>NeverApp</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -8,29 +11,41 @@
 
   <ion-card class="tarjeta-vencidos">
     <ion-card-header>
-      <ion-card-title>Productos vencidos</ion-card-title>
-      <ion-card-subtitle>{{ productosVencidos }} productos</ion-card-subtitle>
+      <div>
+        <ion-card-title>Productos vencidos</ion-card-title>
+        <ion-card-subtitle>{{ productosVencidos }} productos</ion-card-subtitle>
+      </div>
+      <ion-icon name="skull-outline" class="icono-tarjeta"></ion-icon>
     </ion-card-header>
   </ion-card>
 
   <ion-card class="tarjeta-proximos">
     <ion-card-header>
-      <ion-card-title>Próximos a vencer</ion-card-title>
-      <ion-card-subtitle>{{ proximosVencer }} productos</ion-card-subtitle>
+      <div>
+        <ion-card-title>Próximos a vencer</ion-card-title>
+        <ion-card-subtitle>{{ proximosVencer }} productos</ion-card-subtitle>
+      </div>
+      <ion-icon name="time-outline" class="icono-tarjeta"></ion-icon>
     </ion-card-header>
   </ion-card>
 
   <ion-card class="tarjeta-pocas-unidades">
     <ion-card-header>
-      <ion-card-title>Pocas unidades</ion-card-title>
-      <ion-card-subtitle>{{ pocasUnidades }} productos</ion-card-subtitle>
+      <div>
+        <ion-card-title>Pocas unidades</ion-card-title>
+        <ion-card-subtitle>{{ pocasUnidades }} productos</ion-card-subtitle>
+      </div>
+      <ion-icon name="alert-circle-outline" class="icono-tarjeta"></ion-icon>
     </ion-card-header>
   </ion-card>
 
   <ion-card class="tarjeta-total">
     <ion-card-header>
-      <ion-card-title>Total almacenados</ion-card-title>
-      <ion-card-subtitle>{{ totalProductos }} productos</ion-card-subtitle>
+      <div>
+        <ion-card-title>Total almacenados</ion-card-title>
+        <ion-card-subtitle>{{ totalProductos }} productos</ion-card-subtitle>
+      </div>
+      <ion-icon name="archive-outline" class="icono-tarjeta"></ion-icon>
     </ion-card-header>
   </ion-card>
 

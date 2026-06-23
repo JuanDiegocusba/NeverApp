@@ -1,0 +1,42 @@
+// Título principal del menú
+.menu-title {
+  font-size: 1.6rem !important;
+  font-weight: 700 !important;
+  padding-left: 8px;
+}
+
+// Contenedor de la lista
+.menu-list {
+  padding: 12px 0;
+
+  ion-item {
+    --padding-start: 16px;
+    --min-height: 48px;
+    margin: 4px 0;
+    
+    font-weight: 600; // Letras en negrita como tu diseño
+    color: #1c1b1f;
+
+    ion-icon {
+      font-size: 1.3rem;
+      color: #49454f;
+      margin-right: 12px;
+    }
+  }
+
+  // Clase automática de Angular para resaltar la página donde estás parado
+  .active-item {
+    --background: #e1e2e4; // Fondo gris sutil para el elemento activo
+    color: #000000;
+    
+    ion-icon {
+      color: #000000;
+    }
+  }
+  
+  // Opción especial para el botón de salir
+  .logout-item {
+    margin-top: 24px;
+    opacity: 0.8;
+  }
+}
