@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -15,6 +15,7 @@ import {
   IonIcon,
   IonModal,
   IonButtons,
+  IonMenuButton,
   IonButton,
   IonInput,
   IonBadge,
@@ -31,6 +32,7 @@ import { addIcons } from 'ionicons';
 import { add, alertCircleOutline } from 'ionicons/icons';
 import { FoodService, Alimento } from '../../services/food';
 import { NotificacionesService } from '../../services/notificaciones.service';
+import { TranslateService } from '../../services/translate.service';
 
 @Component({
   selector: 'app-inventario',
@@ -53,6 +55,7 @@ import { NotificacionesService } from '../../services/notificaciones.service';
     IonIcon,
     IonModal,
     IonButtons,
+    IonMenuButton,
     IonButton,
     IonInput,
     IonBadge,
@@ -68,11 +71,12 @@ import { NotificacionesService } from '../../services/notificaciones.service';
 export class InventarioPage implements OnInit {
   private foodService = inject(FoodService);
   private notificacionesService = inject(NotificacionesService);
+  private cdr = inject(ChangeDetectorRef);
+  translateService = inject(TranslateService);
 
   public listaAlimentos: Alimento[] = [];
   public isModalOpen = false;
 
-  // Variables del formulario Mapped
   public nuevoNombre: string = '';
   public nuevaCantidad: number = 1;
   public nuevaFecha: string = '';
@@ -84,6 +88,9 @@ export class InventarioPage implements OnInit {
 
   constructor() {
     addIcons({ add, alertCircleOutline });
+    this.translateService.langChanged.subscribe(() => {
+      this.cdr.detectChanges();
+    });
   }
 
   ngOnInit() {
@@ -148,7 +155,7 @@ export class InventarioPage implements OnInit {
 
   guardarAlimento() {
     if (!this.nuevoNombre.trim() || !this.nuevaFecha) {
-      alert('Por favor, llena todos los campos');
+      alert(this.translateService.t('inventory.fillFields'));
       return;
     }
 
@@ -167,7 +174,6 @@ export class InventarioPage implements OnInit {
         this.notificacionesService.programarAlertaVencimiento(alimento);
       }
     } else {
-      // MODO CREACIÓN (PRODUCTO NUEVO)
       const nuevoAlimento = {
         nombre: this.nuevoNombre,
         cantidad: this.nuevaCantidad,

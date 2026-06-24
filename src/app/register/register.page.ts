@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -13,6 +13,7 @@ import {
   IonInput,
   IonButton
 } from '@ionic/angular/standalone';
+import { TranslateService } from '../services/translate.service';
 
 @Component({
   selector: 'app-register',
@@ -38,6 +39,7 @@ export class RegisterPage implements OnInit {
   correo: string = '';
   password: string = '';
   confirmarPassword: string = '';
+  translateService = inject(TranslateService);
 
   constructor(private router: Router) { }
 
@@ -45,19 +47,18 @@ export class RegisterPage implements OnInit {
   }
 
   registrar() {
-
     if (
       !this.nombre ||
       !this.correo ||
       !this.password ||
       !this.confirmarPassword
     ) {
-      alert('Todos los campos son obligatorios');
+      alert(this.translateService.t('register.required'));
       return;
     }
 
     if (this.password !== this.confirmarPassword) {
-      alert('Las contraseñas no coinciden');
+      alert(this.translateService.t('register.passwordMismatch'));
       return;
     }
 
@@ -72,10 +73,9 @@ export class RegisterPage implements OnInit {
       JSON.stringify(usuario)
     );
 
-    alert('Usuario registrado correctamente');
+    alert(this.translateService.t('register.success'));
 
     this.router.navigateByUrl('/login');
-
   }
 
 }

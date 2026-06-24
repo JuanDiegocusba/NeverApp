@@ -1,11 +1,5 @@
 import { Component, EnvironmentInjector, inject } from '@angular/core';
-import {
-          IonTabs,
-          IonTabBar,
-          IonTabButton,
-          IonIcon,
-          IonLabel,
-        } from '@ionic/angular/standalone';
+import { IonTabs } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 
 import {
@@ -25,10 +19,6 @@ import {
   standalone: true,
   imports: [
     IonTabs,
-    IonTabBar,
-    IonTabButton,
-    IonIcon,
-    IonLabel,
   ],
 })
 export class TabsPage {

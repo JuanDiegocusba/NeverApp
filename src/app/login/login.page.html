@@ -8,28 +8,28 @@
 
 <ion-content class="ion-padding">
 
-  <h1>Bienvenido</h1>
+  <h1>{{ translateService.t('login.welcome') }}</h1>
 
-  <p>Inicia sesión para gestionar tus alimentos.</p>
+  <p>{{ translateService.t('login.subtitle') }}</p>
 
   <ion-item>
-    <ion-label position="stacked">Correo electrónico</ion-label>
+    <ion-label position="stacked">{{ translateService.t('login.email') }}</ion-label>
     <ion-input type="email" [(ngModel)]="correo"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label position="stacked">Contraseña</ion-label>
+    <ion-label position="stacked">{{ translateService.t('login.password') }}</ion-label>
     <ion-input type="password" [(ngModel)]="password"></ion-input>
   </ion-item>
 
   <br>
 
   <ion-button expand="block" (click)="iniciarSesion()">
-    Iniciar Sesión
+    {{ translateService.t('login.login') }}
   </ion-button>
 
   <ion-button expand="block" fill="outline" (click)="irARegistro()">
-    Registrarse
+    {{ translateService.t('login.register') }}
   </ion-button>
 
 </ion-content>

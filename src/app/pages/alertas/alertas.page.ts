@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -11,6 +11,8 @@ import {
   IonLabel,
   IonIcon,
   IonBadge,
+  IonButtons,
+  IonMenuButton,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -19,6 +21,8 @@ import {
   alertCircleOutline,
 } from 'ionicons/icons';
 import { FoodService, Alimento } from '../../services/food';
+import { NotificacionesService } from '../../services/notificaciones.service';
+import { TranslateService } from '../../services/translate.service';
 
 @Component({
   selector: 'app-alertas',
@@ -35,18 +39,26 @@ import { FoodService, Alimento } from '../../services/food';
     IonLabel,
     IonIcon,
     IonBadge,
+    IonButtons,
+    IonMenuButton,
     CommonModule,
     FormsModule,
   ],
 })
 export class AlertasPage implements OnInit {
   private foodService = inject(FoodService);
+  private notificacionesService = inject(NotificacionesService);
+  private cdr = inject(ChangeDetectorRef);
+  translateService = inject(TranslateService);
 
   public productosAlertas: Alimento[] = [];
   public today = new Date();
 
   constructor() {
     addIcons({ warningOutline, checkmarkCircleOutline, alertCircleOutline });
+    this.translateService.langChanged.subscribe(() => {
+      this.cdr.detectChanges();
+    });
   }
 
   ngOnInit() {
@@ -55,6 +67,7 @@ export class AlertasPage implements OnInit {
 
   ionViewWillEnter() {
     this.cargarAlertas();
+    this.notificacionesService.verificarYNotificarAlertas(this.foodService.getInventario());
   }
 
   cargarAlertas() {

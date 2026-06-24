@@ -1,6 +1,5 @@
-import { Component, inject } from '@angular/core'; // 1. Importamos inject
+import { Component, inject, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { 
-  IonApp, 
   IonRouterOutlet, 
   IonMenu, 
   IonHeader, 
@@ -12,7 +11,7 @@ import {
   IonIcon, 
   IonLabel 
 } from '@ionic/angular/standalone';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router'; // 2. Importamos el Router de Angular
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { addIcons } from 'ionicons';
 import { 
@@ -24,13 +23,15 @@ import {
   settingsOutline, 
   logOutOutline 
 } from 'ionicons/icons';
+import { TranslateService } from './services/translate.service';
+import { NotificacionesService } from './services/notificaciones.service';
+import { FoodService } from './services/food';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   standalone: true,
   imports: [
-    IonApp, 
     IonRouterOutlet, 
     IonMenu, 
     IonHeader, 
@@ -46,8 +47,14 @@ import {
   ],
 })
 export class AppComponent {
- 
+  
+  @ViewChild(IonMenu) menu!: IonMenu;
+
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
+  private notificacionesService = inject(NotificacionesService);
+  private foodService = inject(FoodService);
+  translateService = inject(TranslateService);
 
   constructor() {
     addIcons({ 
@@ -61,6 +68,10 @@ export class AppComponent {
     });
 
     this.inicializarNotificaciones();
+
+    this.translateService.langChanged.subscribe(() => {
+      this.cdr.detectChanges();
+    });
   }
 
   async inicializarNotificaciones() {
@@ -68,17 +79,23 @@ export class AppComponent {
       const status = await LocalNotifications.requestPermissions();
       if (status.display === 'granted') {
         console.log('Permisos de notificación concedidos');
+        this.notificacionesService.verificarYNotificarAlertas(this.foodService.getInventario());
       }
     } catch (error) {
       console.error('Error al solicitar permisos:', error);
     }
   }
 
-  
-  cerrarSesion() {
-    console.log('Cerrando sesión y limpiando almacenamiento...');
+  closeMenu() {
+    this.menu.close();
+  }
 
+  cerrarSesion() {
+    const usuario = localStorage.getItem('usuarioNeverApp');
+    const lang = localStorage.getItem('neverapp_lang');
     localStorage.clear();
+    if (usuario) localStorage.setItem('usuarioNeverApp', usuario);
+    if (lang) localStorage.setItem('neverapp_lang', lang);
     sessionStorage.clear();
     this.router.navigateByUrl('/login', { replaceUrl: true });
   }

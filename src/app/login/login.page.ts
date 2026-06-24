@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -13,6 +13,7 @@ import {
   IonInput,
   IonButton
 } from '@ionic/angular/standalone';
+import { TranslateService } from '../services/translate.service';
 
 @Component({
   selector: 'app-login',
@@ -36,6 +37,7 @@ export class LoginPage implements OnInit {
 
   correo: string = '';
   password: string = '';
+  translateService = inject(TranslateService);
 
   constructor(private router: Router) { }
 
@@ -47,11 +49,10 @@ export class LoginPage implements OnInit {
   }
 
   iniciarSesion() {
-
     const usuarioGuardado = localStorage.getItem('usuarioNeverApp');
 
     if (!usuarioGuardado) {
-      alert('No existe ningún usuario registrado');
+      alert(this.translateService.t('login.noUser'));
       return;
     }
 
@@ -61,12 +62,10 @@ export class LoginPage implements OnInit {
       this.correo === usuario.correo &&
       this.password === usuario.password
     ) {
-      alert('Inicio de sesión correcto');
-
+      alert(this.translateService.t('login.success'));
       this.router.navigateByUrl('/tabs', { replaceUrl: true });
-
     } else {
-      alert('Correo o contraseña incorrectos');
+      alert(this.translateService.t('login.error'));
     }
   }
 

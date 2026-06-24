@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -6,6 +6,7 @@ import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
 
 import { FoodService } from '../../services/food';
+import { TranslateService } from '../../services/translate.service';
 
 import {
   IonContent,
@@ -21,12 +22,13 @@ import {
   IonLabel,
   IonModal,
   IonButtons,
+  IonMenuButton,
   IonButton,
   IonInput,
   IonFab,
   IonFabButton,
   IonIcon,
-  IonBadge   // 👈 IMPORTANTE
+  IonBadge
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -48,6 +50,7 @@ import {
     IonLabel,
     IonModal,
     IonButtons,
+    IonMenuButton,
     IonButton,
     IonInput,
     IonFab,
@@ -61,11 +64,12 @@ import {
 export class CategoriasPage implements OnInit {
 
   private foodService = inject(FoodService);
+  private cdr = inject(ChangeDetectorRef);
+  translateService = inject(TranslateService);
 
   isModalOpen = false;
   nuevaCategoria = '';
 
-  // 🔥 AQUÍ está el cambio clave
   conteoCategorias: any = {};
 
   categorias: string[] = [
@@ -78,6 +82,9 @@ export class CategoriasPage implements OnInit {
 
   constructor() {
     addIcons({ add });
+    this.translateService.langChanged.subscribe(() => {
+      this.cdr.detectChanges();
+    });
   }
 
   ngOnInit() {
@@ -88,7 +95,6 @@ export class CategoriasPage implements OnInit {
     this.cargarConteo();
   }
 
-  // 🔥 CARGA DATOS DEL INVENTARIO
   cargarConteo() {
     this.conteoCategorias = this.foodService.getConteoPorCategoria();
   }

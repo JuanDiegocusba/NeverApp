@@ -195,4 +195,9 @@ export class FoodService {
       alimento.pendienteRevisar = false;
     }
   }
+
+  limpiarDatos() {
+    this.inventario = [];
+    this.listaCompras = [];
+  }
 }

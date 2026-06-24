@@ -1,41 +1,41 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Registro
+      {{ translateService.t('register.title') }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
 
-  <h1>Crear Cuenta</h1>
+  <h1>{{ translateService.t('register.createAccount') }}</h1>
 
-  <p>Registra tus datos para comenzar a utilizar NeverApp.</p>
+  <p>{{ translateService.t('register.subtitle') }}</p>
 
   <ion-item>
-    <ion-label position="stacked">Nombre completo</ion-label>
+    <ion-label position="stacked">{{ translateService.t('register.fullName') }}</ion-label>
     <ion-input [(ngModel)]="nombre"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label position="stacked">Correo electrónico</ion-label>
+    <ion-label position="stacked">{{ translateService.t('register.email') }}</ion-label>
     <ion-input type="email" [(ngModel)]="correo"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label position="stacked">Contraseña</ion-label>
+    <ion-label position="stacked">{{ translateService.t('register.password') }}</ion-label>
     <ion-input type="password" [(ngModel)]="password"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label position="stacked">Confirmar contraseña</ion-label>
+    <ion-label position="stacked">{{ translateService.t('register.confirmPassword') }}</ion-label>
     <ion-input type="password" [(ngModel)]="confirmarPassword"></ion-input>
   </ion-item>
 
   <br>
 
   <ion-button expand="block" (click)="registrar()">
-    Registrarse
+    {{ translateService.t('register.register') }}
   </ion-button>
 
 </ion-content>

@@ -12,8 +12,8 @@
   <ion-card class="tarjeta-vencidos">
     <ion-card-header>
       <div>
-        <ion-card-title>Productos vencidos</ion-card-title>
-        <ion-card-subtitle>{{ productosVencidos }} productos</ion-card-subtitle>
+        <ion-card-title>{{ translateService.t('dashboard.expired') }}</ion-card-title>
+        <ion-card-subtitle>{{ productosVencidos }} {{ translateService.t('dashboard.products') }}</ion-card-subtitle>
       </div>
       <ion-icon name="skull-outline" class="icono-tarjeta"></ion-icon>
     </ion-card-header>
@@ -22,8 +22,8 @@
   <ion-card class="tarjeta-proximos">
     <ion-card-header>
       <div>
-        <ion-card-title>Próximos a vencer</ion-card-title>
-        <ion-card-subtitle>{{ proximosVencer }} productos</ion-card-subtitle>
+        <ion-card-title>{{ translateService.t('dashboard.expiring') }}</ion-card-title>
+        <ion-card-subtitle>{{ proximosVencer }} {{ translateService.t('dashboard.products') }}</ion-card-subtitle>
       </div>
       <ion-icon name="time-outline" class="icono-tarjeta"></ion-icon>
     </ion-card-header>
@@ -32,8 +32,8 @@
   <ion-card class="tarjeta-pocas-unidades">
     <ion-card-header>
       <div>
-        <ion-card-title>Pocas unidades</ion-card-title>
-        <ion-card-subtitle>{{ pocasUnidades }} productos</ion-card-subtitle>
+        <ion-card-title>{{ translateService.t('dashboard.lowStock') }}</ion-card-title>
+        <ion-card-subtitle>{{ pocasUnidades }} {{ translateService.t('dashboard.products') }}</ion-card-subtitle>
       </div>
       <ion-icon name="alert-circle-outline" class="icono-tarjeta"></ion-icon>
     </ion-card-header>
@@ -42,8 +42,8 @@
   <ion-card class="tarjeta-total">
     <ion-card-header>
       <div>
-        <ion-card-title>Total almacenados</ion-card-title>
-        <ion-card-subtitle>{{ totalProductos }} productos</ion-card-subtitle>
+        <ion-card-title>{{ translateService.t('dashboard.total') }}</ion-card-title>
+        <ion-card-subtitle>{{ totalProductos }} {{ translateService.t('dashboard.products') }}</ion-card-subtitle>
       </div>
       <ion-icon name="archive-outline" class="icono-tarjeta"></ion-icon>
     </ion-card-header>

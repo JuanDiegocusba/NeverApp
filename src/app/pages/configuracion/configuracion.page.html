@@ -1,13 +1,49 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>configuracion</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ translateService.t('settings.title') }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">configuracion</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-label>{{ translateService.t('settings.notifications') }}</ion-label>
+      <ion-toggle slot="end" [(ngModel)]="notifications" (ionChange)="onNotificationsChange()"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{ translateService.t('settings.changeUsername') }}</ion-label>
+      <ion-input [placeholder]="translateService.t('settings.usernamePlaceholder')" [(ngModel)]="username"></ion-input>
+    </ion-item>
+
+    <div class="ion-padding">
+      <ion-button expand="block" color="medium" (click)="actualizarNombre()">
+        {{ translateService.t('settings.updateUsername') }}
+      </ion-button>
+    </div>
+
+    <ion-item>
+      <ion-label>{{ translateService.t('settings.language') }}</ion-label>
+      <ion-select [placeholder]="translateService.t('settings.select')" [value]="language" (ionChange)="onLanguageChange($event)">
+        <ion-select-option value="en">English</ion-select-option>
+        <ion-select-option value="es">Español</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <div class="ion-padding">
+    <ion-button expand="block" color="danger" (click)="eliminarDatos()">
+      {{ translateService.t('settings.deleteData') }}
+    </ion-button>
+  </div>
 </ion-content>
+
+<ion-alert
+  [isOpen]="showDeleteAlert"
+  [header]="translateService.t('settings.deleteData')"
+  [message]="translateService.t('settings.deleteConfirm')"
+  [buttons]="alertButtons">
+</ion-alert>

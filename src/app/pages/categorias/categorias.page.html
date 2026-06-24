@@ -1,6 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Categorías</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ translateService.t('categories.title') }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -8,47 +11,46 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Categorías de alimentos</ion-card-title>
+      <ion-card-title>{{ translateService.t('categories.cardTitle') }}</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
-      Organiza los productos del inventario por categorías.
+      {{ translateService.t('categories.cardText') }}
     </ion-card-content>
   </ion-card>
 
-  <!-- 🔥 LISTA CON CONTADOR -->
   <ion-list>
 
     <ion-item>
-      <ion-label>Lácteos</ion-label>
+      <ion-label>{{ translateService.t('inventory.dairy') }}</ion-label>
       <ion-badge slot="end">
         {{ conteoCategorias['Lácteos'] || 0 }}
       </ion-badge>
     </ion-item>
 
     <ion-item>
-      <ion-label>Frutas</ion-label>
+      <ion-label>{{ translateService.t('inventory.fruits') }}</ion-label>
       <ion-badge slot="end">
         {{ conteoCategorias['Frutas'] || 0 }}
       </ion-badge>
     </ion-item>
 
     <ion-item>
-      <ion-label>Verduras</ion-label>
+      <ion-label>{{ translateService.t('inventory.vegetables') }}</ion-label>
       <ion-badge slot="end">
         {{ conteoCategorias['Verduras'] || 0 }}
       </ion-badge>
     </ion-item>
 
     <ion-item>
-      <ion-label>Carnes y Proteínas</ion-label>
+      <ion-label>{{ translateService.t('inventory.meat') }}</ion-label>
       <ion-badge slot="end">
         {{ conteoCategorias['Carnes y Proteínas'] || 0 }}
       </ion-badge>
     </ion-item>
 
     <ion-item>
-      <ion-label>Granos</ion-label>
+      <ion-label>{{ translateService.t('inventory.grains') }}</ion-label>
       <ion-badge slot="end">
         {{ conteoCategorias['Granos'] || 0 }}
       </ion-badge>
@@ -61,11 +63,11 @@
 
       <ion-header>
         <ion-toolbar>
-          <ion-title>Nueva Categoría</ion-title>
+          <ion-title>{{ translateService.t('categories.newTitle') }}</ion-title>
 
           <ion-buttons slot="end">
             <ion-button (click)="cerrarModal()">
-              Cerrar
+              {{ translateService.t('categories.close') }}
             </ion-button>
           </ion-buttons>
 
@@ -76,10 +78,10 @@
 
         <ion-item>
           <ion-input
-            label="Nombre Categoría"
+            [label]="translateService.t('categories.nameLabel')"
             labelPlacement="floating"
             [(ngModel)]="nuevaCategoria"
-            placeholder="Ej. Lácteos">
+            [placeholder]="translateService.t('categories.namePlaceholder')">
           </ion-input>
         </ion-item>
 
@@ -88,7 +90,7 @@
           class="ion-margin-top"
           (click)="guardarCategoria()">
 
-          Guardar Categoría
+          {{ translateService.t('categories.save') }}
 
         </ion-button>
 
